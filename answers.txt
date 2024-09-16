@@ -1,0 +1,92 @@
+/*Q1*/
+SELECT contactFirstName, contactLastName, phone, addressLine1, creditLimit 
+FROM customers
+WHERE creditLimit > 25000
+
+/*Q2*/
+SELECT customerName, state , country 
+FROM customers
+WHERE customerName like '%Collect%';
+
+/*Q3*/
+SELECT addressLine1 , addressLine2, city , state , postalCode , country
+FROM customers 
+WHERE state is not null 
+
+/*Q4*/?
+SELECT state , avg(creditLimit) as average_credit_limit
+FROM customers 
+WHERE country = 'USA'
+GROUP BY state
+
+/*Q5*/
+SELECT customerName , orderNumber , status
+FROM customers c 
+JOIN orders o
+ON c.customerNumber = o.customerNumber
+LIMIT 15 
+
+/*Q6*/
+SELECT 
+c.customerName , 
+c.customerNumber , 
+sum(p.amount) AS total_payment_amount
+FROM customers c
+JOIN payments p 
+ON c.customerNumber = p.customerNumber 
+GROUP BY 
+c.customerName , 
+c.customerNumber 
+ORDER BY total_payment_amount
+DESC 
+LIMIT 10
+
+/*Q7*/
+SELECT 
+c.customerName , 
+c.customerNumber , 
+p.productCode ,
+p.productName , 
+sum(od.quantityOrdered) AS total_ordered
+FROM customers c
+LEFT JOIN orders o 
+ON o.customerNumber = c.customerNumber
+LEFT JOIN orderDetails od 
+ON o.orderNumber = od.orderNumber
+LEFT JOIN products p
+ON od.productCode = p.productCode 
+GROUP BY 
+c.customerName , 
+c.customerNumber , 
+p.productCode ,
+p.productName 
+HAVING 
+total_ordered >= 10
+ORDER BY 
+total_ordered
+
+/*Q8*/
+WITH 
+employeeCount 
+AS
+(
+SELECT COUNT(*) AS total_employees ,
+officeCode 
+FROM employees
+GROUP BY 
+officeCode
+HAVING 
+total_employees < 5
+)
+SELECT 
+e.lastName ,
+e.firstName ,
+e.employeeNumber , 
+e.officeCode
+FROM employees e
+JOIN 
+employeeCount ec
+ON e.officeCode = ec.officeCode
+
+
+
